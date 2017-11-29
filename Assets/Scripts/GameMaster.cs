@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,7 +57,8 @@ public class GameMaster : NetworkBehaviour
         if (!isServer) return;
 
 	    _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(Time.deltaTime));
-	    TimeText.text = _timeSpan.Minutes + ":" + (_timeSpan.Seconds < 10 ? "0" : "") + _timeSpan.Seconds + ":" + (_timeSpan.Milliseconds < 100 ? "0" : "") + _timeSpan.Milliseconds / 10;
+        var textScript = TimeText.GetComponent<UpdateText>();
+        textScript.SetText(_timeSpan.Minutes + ":" + (_timeSpan.Seconds < 10 ? "0" : "") + _timeSpan.Seconds + ":" + (_timeSpan.Milliseconds < 100 ? "0" : "") + _timeSpan.Milliseconds / 10);
 
 	    _nextTarget -= Time.deltaTime;
 	    if (_nextTarget <= 0)
@@ -76,7 +75,9 @@ public class GameMaster : NetworkBehaviour
 
             _nextTarget = CalculateSpan() / 1000.0;
             _amountTargets++;
-	        TargetsText.text = "Targets: " + _amountTargets;
+
+            var targetsScript = TargetsText.GetComponent<UpdateText>();
+            targetsScript.SetText("Targets: " + _amountTargets);    
 	        if (_amountTargets >= TargetsToLose)
 	        {
 	            EndGame();
