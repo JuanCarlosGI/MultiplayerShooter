@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using Assets.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
-public class GameMaster : MonoBehaviour
+public class GameMaster : NetworkBehaviour
 {
     public static GameMaster Instance;
     private static readonly System.Random Random = new System.Random(DateTime.Now.Millisecond);
@@ -55,6 +56,8 @@ public class GameMaster : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+        if (!isServer) return;
+
 	    _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(Time.deltaTime));
 	    TimeText.text = _timeSpan.Minutes + ":" + (_timeSpan.Seconds < 10 ? "0" : "") + _timeSpan.Seconds + ":" + (_timeSpan.Milliseconds < 100 ? "0" : "") + _timeSpan.Milliseconds / 10;
 
@@ -66,11 +69,12 @@ public class GameMaster : MonoBehaviour
 	        var randZ = (float)Random.NextDouble() * _zSpan + MinZ;
 
 	        var target = Targets[Random.Next(Targets.Length)];
-	        Instantiate(target, new Vector3(randX, randY, randZ),
+	        var aux = Instantiate(target, new Vector3(randX, randY, randZ),
 	            new Quaternion((float)Random.NextDouble() * 360, (float)Random.NextDouble() * 360,
 	                (float)Random.NextDouble() * 360, 0));
+            NetworkServer.Spawn(aux);
 
-	        _nextTarget = CalculateSpan() / 1000.0;
+            _nextTarget = CalculateSpan() / 1000.0;
             _amountTargets++;
 	        TargetsText.text = "Targets: " + _amountTargets;
 	        if (_amountTargets >= TargetsToLose)

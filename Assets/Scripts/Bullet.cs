@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Assets.Scripts
 {
-    class Bullet : MonoBehaviour
+    class Bullet : NetworkBehaviour
     {
         public AudioClip BulletHitSound;
         public float MaxLifespanSeconds;
@@ -33,7 +34,10 @@ namespace Assets.Scripts
         {
             if (collision.gameObject.tag == Target.tag)
             {
-                Destroy(collision.gameObject);
+                var target = collision.gameObject.GetComponent<Target>();
+                if (target != null)
+                    target.Destroy();
+
                 GameMaster.Instance.OnTargetDestroyed();
             }
 

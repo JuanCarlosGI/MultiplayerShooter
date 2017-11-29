@@ -13,9 +13,8 @@ namespace Assets.Scripts
             return Resources.Load<GameObject>("BlueBullet");
         }
 
-        public override void Transform()
+        public override void Transform(GameObject child)
         {
-            var child = GunModel.transform.Find("Hull");
             var mats = child.GetComponent<Renderer>().materials;
             mats[0] = _material;
             child.GetComponent<Renderer>().materials = mats;

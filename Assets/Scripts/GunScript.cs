@@ -12,7 +12,7 @@ namespace Assets.Scripts
         }
 
         public abstract GameObject GetBullet();
-        public abstract void Transform();
+        public abstract void Transform(GameObject go);
         public abstract GunScript GetNext();
     }
 }
