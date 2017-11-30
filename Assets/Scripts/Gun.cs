@@ -19,6 +19,9 @@ public class Gun : NetworkBehaviour
     private AudioSource _asShot;
     private AudioSource _asChange;
 
+    [SyncVar(hook = "ChangeGun")]
+    public int Change;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -48,24 +51,36 @@ public class Gun : NetworkBehaviour
         }
 	    if (Input.GetMouseButtonDown(1) && _nextChange <= 0)
 	    {
-            _script = _script.GetNext();
-	        _script.Transform(Hull);
-	        _asChange.Play();
-
-	        _nextChange = ChangeCooldown;
+            CmdChangeGun();
         }
 	}
+
+    [Command]
+
+    void CmdChangeGun()
+    {
+        Change++;
+    }
 
     [Command]
     void CmdFire()
     {
         var bullet = Instantiate(_script.GetBullet(), Spawn.transform.position, Spawn.transform.rotation);
-        bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * BulletSpeed);
+        bullet.GetComponent<Bullet>().BulletSpeed = BulletSpeed;
         _asShot.Play();
 
         _nextShot = ShootCooldown;
 
         // Spawn the bullet on the Clients
         NetworkServer.Spawn(bullet);
+    }
+
+    void ChangeGun(int _)
+    {
+        _script = _script.GetNext();
+        _script.Transform(Hull);
+        _asChange.Play();
+
+        _nextChange = ChangeCooldown;
     }
 }

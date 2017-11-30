@@ -13,6 +13,8 @@ namespace Assets.Scripts
         public float MaxLifespanSeconds;
         public GameObject Target;
 
+        public uint BulletSpeed;
+
         private AudioSource _asHit;
         private float _lifeSpan;
 
@@ -21,6 +23,8 @@ namespace Assets.Scripts
             _asHit = gameObject.AddComponent<AudioSource>();
             _asHit.clip = BulletHitSound;
             _lifeSpan = 0;
+
+            GetComponent<Rigidbody>().AddForce(transform.forward * BulletSpeed);
         }
 
         private void Update()
