@@ -13,7 +13,7 @@ public class Water : MonoBehaviour
     // Use this for initialization
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "player")
         {
             Instructions.text = "Press E to return to the surface";
         }
@@ -21,7 +21,7 @@ public class Water : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "player")
         {
             Instructions.text = "";
         }
@@ -29,7 +29,7 @@ public class Water : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "player")
         {
             if (Input.GetKeyDown(KeyCode.E))
             {

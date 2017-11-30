@@ -17,12 +17,18 @@ public class GameMaster : NetworkBehaviour
     public Text GameOverText;
 
     public GameObject[] Targets;
+    public GameObject Cube;
     public long MinX;
     public long MaxX;
     public long MinY;
     public long MaxY;
     public long MinZ;
     public long MaxZ;
+
+    public float CubeSpawnProbability;
+    public int TargetAdd;
+    public int CubeSubtract;
+    public int EnemySubtract;
 
     private long _xSpan;
     private long _ySpan;
@@ -32,6 +38,8 @@ public class GameMaster : NetworkBehaviour
     private int _amountTargets;
     private TimeSpan _timeSpan;
     public static int _amountDestroyed;
+    public static int _amountHits;
+    public static int _amountEnemyHits;
 
     [SyncVar(hook = "EndGame")]
     private string _sGameOver;
@@ -52,14 +60,17 @@ public class GameMaster : NetworkBehaviour
         _timeSpan = new TimeSpan();
         Instance = this;
         _amountDestroyed = 0;
+        _amountHits = 0;
+        _amountEnemyHits = 0;
     }
 	
 	// Update is called once per frame
 	void Update ()
 	{
         if (!isServer) return;
+        if (PauseGame.Instance.IsPaused) return;
 
-	    _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(Time.deltaTime));
+        _timeSpan = _timeSpan.Add(TimeSpan.FromSeconds(Time.deltaTime));
         var textScript = TimeText.GetComponent<UpdateText>();
         textScript.SetText(_timeSpan.Minutes + ":" + (_timeSpan.Seconds < 10 ? "0" : "") + _timeSpan.Seconds + ":" + (_timeSpan.Milliseconds < 100 ? "0" : "") + _timeSpan.Milliseconds / 10);
 
@@ -76,6 +87,16 @@ public class GameMaster : NetworkBehaviour
 	                (float)Random.NextDouble() * 360, 0));
             NetworkServer.Spawn(aux);
 
+            var r = Random.NextDouble();
+
+            if (r < CubeSpawnProbability)
+            {
+                var cube = Instantiate(Cube, new Vector3(randX, randY, randZ),
+                    new Quaternion((float)Random.NextDouble() * 360, (float)Random.NextDouble() * 360,
+                        (float)Random.NextDouble() * 360, 0));
+                NetworkServer.Spawn(cube);
+            }
+
             _nextTarget = CalculateSpan() / 1000.0;
             _amountTargets++;
 
@@ -83,7 +104,8 @@ public class GameMaster : NetworkBehaviour
             targetsScript.SetText("Targets: " + _amountTargets);    
 	        if (_amountTargets >= TargetsToLose)
 	        {
-                _sGameOver = _timeSpan.TotalMilliseconds + ">" + _amountDestroyed;
+                var score = Math.Max(0, _amountDestroyed * TargetAdd - _amountHits * CubeSubtract - _amountEnemyHits * EnemySubtract);
+                _sGameOver = _timeSpan.TotalMilliseconds + ">" + score;
 	        }
         }
     }
@@ -101,14 +123,25 @@ public class GameMaster : NetworkBehaviour
         TargetsText.text = "Targets: " + _amountTargets;
     }
 
+    public void AddCubeHit()
+    {
+        _amountHits++;
+    }
+
+    public void AddEnemyHit()
+    {
+        _amountEnemyHits++;
+    }
+
     private void EndGame(string _timeSpanAndAmount)
     {
         String[] s = _timeSpanAndAmount.Split('>');
         _timeSpan = new TimeSpan(0, 0, 0, 0, int.Parse(s[0]));
         GameOver.LatestScore = _timeSpan;
-        GameOver.LatestTargetsDestroyed = int.Parse(s[1]);
+        var score = int.Parse(s[1]);
+        GameOver.LatestTargetsDestroyed = score;
 
-        if (_scoreAnalizer.GetHighScore() < _timeSpan) _scoreAnalizer.SaveScore(_timeSpan);
+        if (_scoreAnalizer.GetHighScore() < score) _scoreAnalizer.SaveScore(score);
         SceneManager.LoadScene("gameover");
     }
 }

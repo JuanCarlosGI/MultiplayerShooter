@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : NetworkBehaviour {
     public float Speed = 0.5f;
 
     private Rigidbody _rb;
@@ -15,6 +17,9 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (!isServer) return;
+        if (PauseGame.Instance.IsPaused) return;
+
         var players = GameObject.FindGameObjectsWithTag("player");
         var closest = players[0];
         var closestDistance = closest.transform.position - transform.position;

@@ -3,25 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    class PauseGame : MonoBehaviour
+    class PauseGame : NetworkBehaviour
     {
         public static PauseGame Instance { get; private set; }
         public bool IsPaused { get; private set; }
 
+        [SyncVar(hook = "Pause")]
+        private bool _syncPaused;
+
         public Text PauseText;
 
-        public void Pause()
+        private void Pause(bool pause)
         {
+            IsPaused = pause;
+            if (!pause)
+            {
+                Resume();
+                return;
+            }
+
             Time.timeScale = 0;
             PauseText.text = "Press P to resume\nPress Q to quit\nPress M for main menu";
         }
 
-        public void Resume()
+        private void Resume()
         {
             Time.timeScale = 1;
             PauseText.text = "";
@@ -31,6 +42,7 @@ namespace Assets.Scripts
         {
             Instance = this;
             IsPaused = false;
+            PauseText = GameObject.Find("PauseText").GetComponent<Text>();
             PauseText.text = "";
             Resume();
         }
@@ -39,11 +51,10 @@ namespace Assets.Scripts
         {
             if (Input.GetKeyDown(KeyCode.P))
             {
-                IsPaused = !IsPaused;
-                if (IsPaused)
-                    Pause();
+                if (!IsPaused)
+                    CmdPause();
                 else
-                    Resume();
+                    CmdResume();
             }
             if (IsPaused)
             {
@@ -52,6 +63,18 @@ namespace Assets.Scripts
                 if (Input.GetKeyDown(KeyCode.M))
                     SceneManager.LoadScene("start");
             }
+        }
+
+        [Command]
+        void CmdPause()
+        {
+            _syncPaused = true;
+        }
+
+        [Command]
+        void CmdResume()
+        {
+            _syncPaused = false;
         }
     }
 }

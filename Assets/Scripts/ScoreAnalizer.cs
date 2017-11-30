@@ -8,14 +8,14 @@ namespace Assets.Scripts
 {
     class ScoreAnalizer
     {
-        private readonly IDataManager<TimeSpan> _dm = new DictionaryManager();
+        private readonly IDataManager<int> _dm = new DictionaryManager();
 
-        public void SaveScore(TimeSpan timeSpan)
+        public void SaveScore(int score)
         {
-            _dm.SetData("HighScore", timeSpan);
+            _dm.SetData("HighScore", score);
         }
 
-        public TimeSpan GetHighScore()
+        public int GetHighScore()
         {
             return _dm.GetData("HighScore");
         }
@@ -27,18 +27,18 @@ namespace Assets.Scripts
         T GetData(string key);
     }
 
-    internal class DictionaryManager : IDataManager<TimeSpan>
+    internal class DictionaryManager : IDataManager<int>
     {
-        private static Dictionary<string, TimeSpan> _dict = new Dictionary<string, TimeSpan>();
+        private static Dictionary<string, int> _dict = new Dictionary<string, int>();
 
-        public void SetData(string key, TimeSpan value)
+        public void SetData(string key, int value)
         {
             _dict[key] = value;
         }
 
-        public TimeSpan GetData(string key)
+        public int GetData(string key)
         {
-            return _dict.ContainsKey(key) ? _dict[key] : new TimeSpan();
+            return _dict.ContainsKey(key) ? _dict[key] : 0;
         }
     }
 }

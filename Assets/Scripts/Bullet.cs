@@ -45,6 +45,13 @@ namespace Assets.Scripts
                 GameMaster.Instance.OnTargetDestroyed();
             }
 
+            if (collision.gameObject.tag == "cube")
+            {
+                var cube = collision.gameObject.GetComponent<Cube>();
+                if (cube != null)
+                    cube.Delete();
+            }
+
             _asHit.Play();
             Destroy(gameObject);
         }
