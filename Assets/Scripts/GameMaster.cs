@@ -31,7 +31,7 @@ public class GameMaster : NetworkBehaviour
 
     private int _amountTargets;
     private TimeSpan _timeSpan;
-    private int _amountDestroyed;
+    public static int _amountDestroyed;
 
     [SyncVar(hook = "EndGame")]
     private string _sGameOver;
