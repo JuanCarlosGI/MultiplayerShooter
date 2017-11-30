@@ -33,6 +33,9 @@ public class GameMaster : NetworkBehaviour
     private TimeSpan _timeSpan;
     private int _amountDestroyed;
 
+    [SyncVar(hook = "EndGame")]
+    private string _sGameOver;
+
     private ScoreAnalizer _scoreAnalizer = new ScoreAnalizer();
     // Use this for initialization
     void Start ()
@@ -80,7 +83,7 @@ public class GameMaster : NetworkBehaviour
             targetsScript.SetText("Targets: " + _amountTargets);    
 	        if (_amountTargets >= TargetsToLose)
 	        {
-	            EndGame();
+                _sGameOver = _timeSpan.TotalMilliseconds + ">" + _amountDestroyed;
 	        }
         }
     }
@@ -98,10 +101,12 @@ public class GameMaster : NetworkBehaviour
         TargetsText.text = "Targets: " + _amountTargets;
     }
 
-    private void EndGame()
+    private void EndGame(string _timeSpanAndAmount)
     {
+        String[] s = _timeSpanAndAmount.Split('>');
+        _timeSpan = new TimeSpan(0, 0, 0, 0, int.Parse(s[0]));
         GameOver.LatestScore = _timeSpan;
-        GameOver.LatestTargetsDestroyed = _amountDestroyed;
+        GameOver.LatestTargetsDestroyed = int.Parse(s[1]);
 
         if (_scoreAnalizer.GetHighScore() < _timeSpan) _scoreAnalizer.SaveScore(_timeSpan);
         SceneManager.LoadScene("gameover");
