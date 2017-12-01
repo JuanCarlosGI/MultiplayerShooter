@@ -20,9 +20,9 @@ namespace Assets.Scripts
             Cursor.lockState = CursorLockMode.None;
 
             var high = _sa.GetHighScore();
-            GameOverText.text = "HighScore: " + high + "\n\n" +
-                           "Your score: " + LatestTargetsDestroyed + "\n" +
-                           "Time survived:\n" + TimeToString(LatestScore);
+            GameOverText.text = "Puntaje Más Alto: " + high + "\n\n" +
+                           "Puntaje: " + LatestTargetsDestroyed + "\n" +
+                           "Tiempo Sobrevivido:\n" + TimeToString(LatestScore);
         }
 
         private string TimeToString(TimeSpan timeSpan)

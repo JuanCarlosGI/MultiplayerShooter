@@ -152,6 +152,6 @@ public class GameMaster : NetworkBehaviour
 
     private void UpdateScore(int score)
     {
-        ScoreText.text = "Score: " + score;
+        ScoreText.text = "Puntaje: " + score;
     }
 }

@@ -29,7 +29,7 @@ namespace Assets.Scripts
             }
 
             Time.timeScale = 0;
-            PauseText.text = "Press P to resume\nPress Q to quit\nPress M for main menu";
+            PauseText.text = "Presiona P para Continuar\nPresiona Q para Salir\nPresiona M para Ir al Menú Principal";
         }
 
         private void Resume()
