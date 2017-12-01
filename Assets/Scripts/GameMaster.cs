@@ -15,6 +15,8 @@ public class GameMaster : NetworkBehaviour
     public Text TargetsText;
     public Text TimeText;
     public Text GameOverText;
+    public Text ScoreText;
+    public int ScoreToLose;
 
     public GameObject[] Targets;
     public GameObject Cube;
@@ -43,6 +45,9 @@ public class GameMaster : NetworkBehaviour
 
     [SyncVar(hook = "EndGame")]
     private string _sGameOver;
+
+    [SyncVar(hook = "UpdateScore")]
+    private int _score;
 
     private ScoreAnalizer _scoreAnalizer = new ScoreAnalizer();
     // Use this for initialization
@@ -101,11 +106,11 @@ public class GameMaster : NetworkBehaviour
             _amountTargets++;
 
             var targetsScript = TargetsText.GetComponent<UpdateText>();
-            targetsScript.SetText("Targets: " + _amountTargets);    
-	        if (_amountTargets >= TargetsToLose)
+            targetsScript.SetText("Targets: " + _amountTargets);
+            _score = _amountDestroyed * TargetAdd - _amountHits * CubeSubtract - _amountEnemyHits * EnemySubtract;
+            if (_amountTargets >= TargetsToLose || _score < ScoreToLose)
 	        {
-                var score = Math.Max(0, _amountDestroyed * TargetAdd - _amountHits * CubeSubtract - _amountEnemyHits * EnemySubtract);
-                _sGameOver = _timeSpan.TotalMilliseconds + ">" + score;
+                _sGameOver = _timeSpan.TotalMilliseconds + ">" + _score;
 	        }
         }
     }
@@ -143,5 +148,10 @@ public class GameMaster : NetworkBehaviour
 
         if (_scoreAnalizer.GetHighScore() < score) _scoreAnalizer.SaveScore(score);
         SceneManager.LoadScene("gameover");
+    }
+
+    private void UpdateScore(int score)
+    {
+        ScoreText.text = "Score: " + score;
     }
 }
