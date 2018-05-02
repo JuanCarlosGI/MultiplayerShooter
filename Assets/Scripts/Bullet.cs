@@ -10,18 +10,24 @@ namespace Assets.Scripts
     class Bullet : NetworkBehaviour
     {
         public AudioClip BulletHitSound;
+        public AudioClip BulletHitSoundPuntosCubo;
         public float MaxLifespanSeconds;
         public GameObject Target;
 
         public uint BulletSpeed;
 
         private AudioSource _asHit;
+        private AudioSource _asHitPointsCube;
         private float _lifeSpan;
 
         private void Start()
         {
             _asHit = gameObject.AddComponent<AudioSource>();
             _asHit.clip = BulletHitSound;
+
+            _asHitPointsCube = gameObject.AddComponent<AudioSource>();
+            _asHitPointsCube.clip = BulletHitSoundPuntosCubo;
+
             _lifeSpan = 0;
 
             GetComponent<Rigidbody>().AddForce(transform.forward * BulletSpeed);
@@ -38,6 +44,7 @@ namespace Assets.Scripts
         {
             if (collision.gameObject.tag == Target.tag)
             {
+                SonidosDeBala.iSound = 1;
                 var target = collision.gameObject.GetComponent<Target>();
                 if (target != null)
                     target.Destroy();
@@ -45,14 +52,27 @@ namespace Assets.Scripts
                 GameMaster.Instance.OnTargetDestroyed();
             }
 
-            if (collision.gameObject.tag == "cube")
+            else if (collision.gameObject.tag == "cube")
             {
+                SonidosDeBala.iSound = 1;
                 var cube = collision.gameObject.GetComponent<Cube>();
+                _asHitPointsCube.Play();
+
                 if (cube != null)
+                {
                     cube.Delete();
+                }
             }
 
-            _asHit.Play();
+            else if (collision.gameObject.tag == "enemy")
+            {
+                Enemy.bHitSound = true;
+            }
+            
+            else
+            {
+                SonidosDeBala.iSound = 2;
+            }
             Destroy(gameObject);
         }
     }

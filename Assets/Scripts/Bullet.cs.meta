@@ -1,10 +1,15 @@
 fileFormatVersion: 2
 guid: 8a5ac81534bea344dbece4f24d7e7322
-timeCreated: 1505587910
+timeCreated: 1525252703
 licenseType: Free
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - BulletHitSound: {instanceID: 0}
+  - BulletHitSoundPuntosCubo: {fileID: 8300000, guid: d4a1909c85c5bf14e8125893a2ce5965,
+      type: 3}
+  - Target: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

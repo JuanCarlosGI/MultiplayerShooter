@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 276cde9b19d02f74e8aac06e78ceafcc
+timeCreated: 1525251794
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - BulletHitSoundTree: {fileID: 8300000, guid: 4913039f3f547254fa951919ce77b809,
+      type: 3}
+  - BulletHitSoundPuntosCubo: {fileID: 8300000, guid: 123a6e60dcc1a2b48b374a1c4d548c2e,
+      type: 3}
+  - BulletHitSoundHitEnemigo: {fileID: 8300000, guid: d4a1909c85c5bf14e8125893a2ce5965,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
